@@ -7,6 +7,7 @@ module.exports = {
         producer: String,
         description: String,
         releaseDate: Date,
+        createdAt: Date,
         genre: String,
         contentRating: String,
         userRating: Number,
@@ -15,6 +16,5 @@ module.exports = {
         video: String,
         runtime: Number
     })
-
     )
 };

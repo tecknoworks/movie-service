@@ -9,6 +9,7 @@ module.exports = function (Model) {
             return result.toObject();
         },
         insert: async function (ModelMap) {
+            ModelMap.createdAt=new Date()
             let result = await Model.create(ModelMap)
             return result.toObject()
         },

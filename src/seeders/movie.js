@@ -1,61 +1,46 @@
 var Models = require('../models/movie')
+const faker = require('faker')
+const axios = require('axios')
 
 module.exports = {
     seed: async function () {
         await Models.Movie.deleteMany()
-        await Models.Movie.insertMany([
-            {
-                title: 'Money heist',
-                producer: '5d443172000f984454785121',
-                description: 'A group of very peculiar robbers assault the Factory of Moneda and Timbre to carry out the most perfect robbery in the history of Spain and take home 2.4 billion euros.',
-                releaseDate: Date('7/7/2017'),
-                genre: '5d4432ba03a82512e4236f59',
-                contentRating: '5d443172000f984454785120',
-                userRating: 8.5,
-                actorList: ['5d443170000f984454785117', '5d443170000f984454785119', '5d443170000f98445478511c'],
-                poster: 'assets/images/mv1.jpg',
-                video: 'not-available',
-                runtime: 1234
-            },
-            {
-                title: 'Fast and Furious',
-                producer: '5d443172000f984454785123',
-                description: 'A group of very peculiar robbers assault the Factory of Moneda and Timbre to carry out the most perfect robbery in the history of Spain and take home 2.4 billion euros.',
-                releaseDate: Date('7/7/2017'),
-                genre: '5d4432ba03a82512e4236f5a',
-                contentRating: '5d443172000f98445478511e',
-                userRating: 8.5,
-                actorList: ['5d443170000f984454785119', '5d443170000f984454785118'],
-                poster: 'assets/images/mv1.jpg',
-                video: 'not-available',
-                runtime: 1234
-            },
-            {
-                title: 'Batman',
-                producer: '5d443172000f984454785124',
-                description: 'A group of very peculiar robbers assault the Factory of Moneda and Timbre to carry out the most perfect robbery in the history of Spain and take home 2.4 billion euros.',
-                releaseDate: Date('7/7/2017'),
-                genre: '5d4432ba03a82512e4236f5c',
-                contentRating: '5d443172000f98445478511d',
-                userRating: 8.5,
-                actorList: ['5d443170000f984454785118'],
-                poster: 'assets/images/mv1.jpg',
-                video: 'not-available',
-                runtime: 1234
-            },
-            {
-                title: 'Avatar',
-                producer: '5d443172000f984454785122',
-                description: 'A group of very peculiar robbers assault the Factory of Moneda and Timbre to carry out the most perfect robbery in the history of Spain and take home 2.4 billion euros.',
-                releaseDate: Date('7/7/2017'),
-                genre: '5d4432ba03a82512e4236f59',
-                contentRating: '5d443172000f98445478511f',
-                userRating: 8.5,
-                actorList: ['5d443170000f984454785119'],
-                poster: 'assets/images/mv1.jpg',
-                video: 'not-available',
-                runtime: 1234
-            },
-        ])
+
+        var response1 = await axios.get('http://localhost:3001/details/genre/all');
+        var genreList= Array.from(response1.data);
+        
+        var response2 = await axios.get('http://localhost:3001/details/actor/all');
+        var actorList= Array.from(response2.data);
+
+        
+        var response3 = await axios.get('http://localhost:3001/details/content-rating/all');
+        var contentRatingList= Array.from(response3.data);
+
+        var response4 = await axios.get('http://localhost:3001/details/producer/all');
+        var producerList= Array.from(response4.data);
+
+        for(var i =0; i<10;i++){
+            Models.Movie.create( 
+                {
+                    title: faker.name.title(),
+                    description: faker.lorem.paragraphs(2,'.'),
+                    producer: producerList[Math.floor(faker.random.number(producerList.length-1))].id,
+                    releaseDate: faker.date.past(),
+                    createdAt: faker.date.recent(1),
+                    genre: genreList[Math.floor(faker.random.number(genreList.length-1))].id,
+                    contentRating: contentRatingList[Math.floor(faker.random.number(contentRatingList.length-1))].id,
+                    userRating: faker.random.number(10),
+                    actorList: [ 
+                        actorList[Math.floor(faker.random.number(actorList.length-1))].id,
+                        actorList[Math.floor(faker.random.number(actorList.length-1))].id,
+                        actorList[Math.floor(faker.random.number(actorList.length-1))].id
+                    ],
+                    poster: "assets/images/mv"+(Math.floor(faker.random.number(3))+1).toString()+".jpg",
+                    video: 'no-avaiable',
+                    runtime: Math.floor(faker.random.number(10000))
+
+                }
+            )
+        }
     }
 }
