@@ -5,11 +5,11 @@ const port = 3000
 
 app.use(bodyParser.json())
 
-const router= require('./api/api')
+const router= require('./api')
 
 const connection=require('./loaders/mongoose');
 const seeders= require('./seeders/movie')
-seeders.seed()
-app.use('/', router)
+// seeders.seed()
+app.use('/movies', router)
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))

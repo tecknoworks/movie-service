@@ -1,12 +1,5 @@
-const Models = require('../models/movie')
+const crudService=require('./crud')
 
 module.exports={
-    getAllMovies: async function(){
-        try {
-            var movieList = await Models.Movie.find()
-            return movieList
-        } catch (error) {
-            throw(error)
-        }
-    }
+    CrudeService: crudService
 }
