@@ -18,5 +18,28 @@ module.exports= {
             }
         }
         return movieObj
+    },
+    addHistoryRecordToList: async function(movieList, userId){
+        let response = await axios.get(`http://localhost:3005/history/user-id/${userId}/screenplay-type/movie`)
+        let result = response.data
+        for(var i in movieList){
+            if(Object.keys(result).includes(`${movieList[i].id}`)){
+                movieList[i].historyRecord= result[movieList[i].id]
+            }
+        }
+        return movieList
+    },
+    getHistoryRecord: async function(movie, userId, movieId){
+        try {
+            let response = await axios.get(`http://localhost:3005/history/user-id/${userId}/screenplay-id/${movieId}/screenplay-type/movie`)
+            if(response.status==200){
+                movie.historyRecord=response.data
+            }
+            return movie
+        } catch (error) {
+            return movie
+        }
+        
     }
+
 }

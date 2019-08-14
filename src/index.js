@@ -16,4 +16,4 @@ const seeders= require('./seeders/movie')
 
 app.use('/movies', router)
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+app.listen(port, () => console.log(`movie-service listening on port ${port}!`))
