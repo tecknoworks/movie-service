@@ -11,8 +11,8 @@ module.exports = {
                 movieList[i] = await Mapper.populateMovie(movieList[i])
             }
             
-            if(req.headers.userid!=null){
-                movieList= await Mapper.addHistoryRecordToList(movieList, req.headers.userid)
+            if(req.userId!=null){
+                movieList= await Mapper.addHistoryRecordToList(movieList, req.userId)
             }
             res.send(movieList)
         } catch (error) {
@@ -23,9 +23,9 @@ module.exports = {
         try {
             let movie = await MovieService.getById(req.params.id);
             let movieObj = await Mapper.populateMovie(movie);
-            if(req.headers.userid!=null){
-                
-                movieObj= await Mapper.getHistoryRecord(movieObj, req.headers.userid, movieObj.id)
+            
+            if(req.userId!=null){
+                movieObj= await Mapper.getHistoryRecord(movieObj, req.userId, movieObj.id)
             }
             res.send(movieObj)
         } catch (error) {
