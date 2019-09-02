@@ -9,9 +9,11 @@ module.exports= {
             if(foreignModels.includes(property)){
                 idMap[property]=movieObj[property]
             }
-        }
+        }    
         let response = await axios.post('http://localhost:3001/details/populate/map',idMap)
+        
         let result =response.data
+        
         for(property in movieObj){
             if(foreignModels.includes(property)){
                 movieObj[property]=result[property];

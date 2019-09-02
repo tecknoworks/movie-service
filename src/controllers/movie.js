@@ -1,12 +1,11 @@
-const CrudService = require('../services/crud')
-const Movie = require('../models/movie').Movie
-const MovieService = CrudService(Movie)
+const MovieService = require('../services/movie')
 const Mapper = require('../helpers/mapper')
 
 module.exports = {
     getAllMoviesCtrl: async function (req, res) {
         try {
             let movieList = await MovieService.getAll()
+            
             for (var i = 0; i < movieList.length; i++) {
                 movieList[i] = await Mapper.populateMovie(movieList[i])
             }
@@ -24,7 +23,7 @@ module.exports = {
             let movie = await MovieService.getById(req.params.id);
             let movieObj = await Mapper.populateMovie(movie);
             
-            if(req.userId!=null){
+            if(req.query.userId!=null){
                 movieObj= await Mapper.getHistoryRecord(movieObj, req.userId, movieObj.id)
             }
             res.send(movieObj)
@@ -33,19 +32,34 @@ module.exports = {
         }
     },
     insertMovieCtrl: async function (req, res) {
-        try {
-            let movie = await MovieService.insert(req.body);
-            let movieObj = await Mapper.populateMovie(movie);
+        try {           
+            var movieMap = req.body;
+
+            //TODO: make a middleware to pares all lists from a form
+            movieMap.actorList = JSON.parse(movieMap.actorList);
+
+            let movie = await MovieService.insert(movieMap);
+            
+            movie = await MovieService.saveMediaFiles(movie, req.files);
+        
+            let movieObj = movie.toObject(); 
+            
+            movieObj = await Mapper.populateMovie(movieObj);
+            
             res.send(movieObj)
         } catch (error) {
-            res.send(error.message)
+            console.log(error);
+            
+            res.status(400).send(error.message)
         }
     },
     deleteMovieCtrl: async function (req, res) {
         try {
-            res.send(await MovieService.delete(req.params.id))
+            var movie = await MovieService.delete(req.query.movieId);
+
+            res.send()
         } catch (error) {
-            res.send(error.message)
+            res.status(400).send(error.message)
         }
     }
 }

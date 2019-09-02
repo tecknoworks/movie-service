@@ -4,6 +4,7 @@ module.exports=function(router){
     router.get('/all', validateToken, MovieController.getAllMoviesCtrl );
     router.get('/:id', validateToken, MovieController.getMovieByIdCtrl );
     router.post('/', MovieController.insertMovieCtrl );
-    router.delete('/:id', MovieController.deleteMovieCtrl );
+    router.delete('/delete', MovieController.deleteMovieCtrl );
+    
     return router
 }

@@ -1,8 +1,7 @@
 const mongoose = require('mongoose');
 const schemaBuilder = require('../helpers/schema_builder').schemaBuilder;
 
-module.exports = {
-    Movie: mongoose.model('movie', schemaBuilder({
+module.exports = mongoose.model('movie', schemaBuilder({
         title: String,
         producer: String,
         description: String,
@@ -14,7 +13,7 @@ module.exports = {
         actorList: [String],
         poster: String,
         video: String,
+        videoPoster:  String,
         runtime: Number
     })
-    )
-};
+)
