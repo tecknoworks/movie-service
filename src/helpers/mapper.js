@@ -3,14 +3,38 @@ const axios = require('axios').default
 const foreignModels=['actor', 'actorList', 'genre','genreList', 'contentRating', 'contentRatingList', 'producer', 'producerList'];
 
 module.exports= {
+    populateMovieList: async function(screenplayList){
+        let screenplaysDetails = {}
+        screenplayList.forEach((screenplay)=>{
+            let details={};
+            for(property in screenplay){
+                if(foreignModels.includes(property)){
+                    details[property]=screenplay[property];
+                }
+            }   
+            screenplaysDetails[screenplay.id]=details;
+        });
+
+        let response = await axios.post('http://localhost:3001/details/populate/list',screenplaysDetails);
+
+        let result = response.data;
+        
+        screenplayList.forEach((screenplay, index)=>{
+            for(property in screenplay){
+                if(foreignModels.includes(property)){
+                    screenplayList[index][property]=result[screenplay.id][property];
+                }
+            }
+        });
+    },
     populateMovie: async function(movieObj){
-        let idMap={}
+        let details={}
         for(property in movieObj){
             if(foreignModels.includes(property)){
-                idMap[property]=movieObj[property]
+                details[property]=movieObj[property]
             }
         }    
-        let response = await axios.post('http://localhost:3001/details/populate/map',idMap)
+        let response = await axios.post('http://localhost:3001/details/populate/map',details)
         
         let result =response.data
         

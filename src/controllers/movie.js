@@ -5,10 +5,8 @@ module.exports = {
     getAllMoviesCtrl: async function (req, res) {
         try {
             let movieList = await MovieService.getAll()
-            
-            for (var i = 0; i < movieList.length; i++) {
-                movieList[i] = await Mapper.populateMovie(movieList[i])
-            }
+
+            await Mapper.populateMovieList(movieList);
             
             if(req.userId!=null){
                 movieList= await Mapper.addHistoryRecordToList(movieList, req.userId)
