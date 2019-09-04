@@ -21,7 +21,7 @@ module.exports = {
             let movie = await MovieService.getById(req.params.id);
             let movieObj = await Mapper.populateMovie(movie);
             
-            if(req.query.userId!=null){
+            if(req.userId!=null){
                 movieObj= await Mapper.getHistoryRecord(movieObj, req.userId, movieObj.id)
             }
             res.send(movieObj)
