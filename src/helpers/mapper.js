@@ -30,7 +30,7 @@ module.exports= {
                     screenplayList[index][property]=result[screenplay.id][property];
                 }
             }
-            screenplayList[index]['userRating']=ratingsMap[screenplay.id];
+            screenplayList[index].userRating=ratingsMap[screenplay.id];
         });
         
        
