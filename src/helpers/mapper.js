@@ -5,6 +5,7 @@ const foreignModels=['actor', 'actorList', 'genre','genreList', 'contentRating',
 module.exports= {
     populateMovieList: async function(screenplayList){
         let screenplaysDetails = {}
+        let idList=[];
         screenplayList.forEach((screenplay)=>{
             let details={};
             for(property in screenplay){
@@ -13,19 +14,27 @@ module.exports= {
                 }
             }   
             screenplaysDetails[screenplay.id]=details;
+            idList.push(screenplay.id);
         });
 
         let response = await axios.post('http://localhost:3001/details/populate/list',screenplaysDetails);
 
         let result = response.data;
         
+        let param={list: JSON.stringify(idList)};
+        let ratingResponse=await axios.get('http://localhost:3008/ratings/averages',{params: param});
+        let ratingsMap = ratingResponse.data;
         screenplayList.forEach((screenplay, index)=>{
             for(property in screenplay){
                 if(foreignModels.includes(property)){
                     screenplayList[index][property]=result[screenplay.id][property];
                 }
             }
+            screenplayList[index]['userRating']=ratingsMap[screenplay.id];
         });
+        
+       
+        
     },
     populateMovie: async function(movieObj){
         let details={}
