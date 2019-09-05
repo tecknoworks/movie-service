@@ -18,14 +18,23 @@ module.exports =  {
         saveMediaFiles: async function(movie, files){
 
             if(Object.keys(files).length!=0){
-                //image upload
-                var imageBuffer =  files.poster.data;
-                imageBuffer.name= files.poster.name;
+                //portrait image upload
+                var portraitImageBuffer =  files.poster.data;
+                portraitImageBuffer.name= files.poster.name;
 
                 var uploadImageUrl = `${assetsServiceUrl}/image/upload`
 
-                var imageUploadResponse = await uploadFile(uploadImageUrl, {key: 'image', value: imageBuffer});
-                movie.poster = imageUploadResponse == null ? null : imageUploadResponse.imageFileName;
+                var portraitImageUploadResponse = await uploadFile(uploadImageUrl, {key: 'image', value: portraitImageBuffer});
+                movie.poster = portraitImageUploadResponse == null ? null : portraitImageUploadResponse.imageFileName;
+
+                //landscape
+                var landscapeImageBuffer =  files.landscapePoster.data;
+                landscapeImageBuffer.name= files.landscapePoster.name;
+
+                var uploadImageUrl = `${assetsServiceUrl}/image/upload`
+
+                var landscapeImageUploadResponse = await uploadFile(uploadImageUrl, {key: 'image', value: landscapeImageBuffer});
+                movie.landscapePoster = landscapeImageUploadResponse == null ? null : landscapeImageUploadResponse.imageFileName;
 
                 //video upload
                 var videoBuffer =  files.video.data;
@@ -60,6 +69,7 @@ module.exports =  {
 
             await deleteFile(deleteImageUrl, {key: 'imageFileName', value: movie.poster});
             await deleteFile(deleteImageUrl, {key: 'imageFileName', value: movie.videoPoster});
+            await deleteFile(deleteImageUrl, {key: 'imageFileName', value: movie.landscapePoster});
             await deleteFile(deleteVideoUrl, {key: 'videoFileName', value: movie.video});
 
             return movie.toObject()
