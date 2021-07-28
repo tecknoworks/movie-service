@@ -1,4 +1,5 @@
 const axios = require('axios').default
+const config = require("../config");
 
 const foreignModels=['actor', 'actorList', 'genre','genreList', 'contentRating', 'contentRatingList', 'producer', 'producerList'];
 
@@ -17,12 +18,12 @@ module.exports= {
             idList.push(screenplay.id);
         });
 
-        let response = await axios.post('http://localhost:3001/details/populate/list',screenplaysDetails);
+        let response = await axios.post(`${config.screenplayDetailsServiceUrl}/populate/list`,screenplaysDetails);
 
         let result = response.data;
         
         let param={list: JSON.stringify(idList)};
-        let ratingResponse=await axios.get('http://localhost:3008/ratings/averages',{params: param});
+        let ratingResponse=await axios.get(`${config.ratingServiceUrl}/averages`,{params: param});
         let ratingsMap = ratingResponse.data;
         screenplayList.forEach((screenplay, index)=>{
             for(property in screenplay){
@@ -32,9 +33,6 @@ module.exports= {
             }
             screenplayList[index].userRating=ratingsMap[screenplay.id];
         });
-        
-       
-        
     },
     populateMovie: async function(movieObj){
         let details={}
@@ -43,7 +41,7 @@ module.exports= {
                 details[property]=movieObj[property]
             }
         }    
-        let response = await axios.post('http://localhost:3001/details/populate/map',details)
+        let response = await axios.post(`${config.screenplayDetailsServiceUrl}/populate/map`,details)
         
         let result =response.data
         
@@ -55,7 +53,7 @@ module.exports= {
         return movieObj
     },
     addHistoryRecordToList: async function(movieList, userId){
-        let response = await axios.get(`http://localhost:3005/history/user-id/${userId}/screenplay-type/movie`)
+        let response = await axios.get(`${config.historyServiceUrl}/user-id/${userId}/screenplay-type/movie`)
         let result = response.data
         for(var i in movieList){
             if(Object.keys(result).includes(`${movieList[i].id}`)){
@@ -66,7 +64,7 @@ module.exports= {
     },
     getHistoryRecord: async function(movie, userId, movieId){
         try {
-            let response = await axios.get(`http://localhost:3005/history/user-id/${userId}/screenplay-id/${movieId}/screenplay-type/movie`)
+            let response = await axios.get(`${config.historyServiceUrl}/user-id/${userId}/screenplay-id/${movieId}/screenplay-type/movie`)
             if(response.status==200){
                 movie.historyRecord=response.data
             }

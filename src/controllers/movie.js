@@ -13,12 +13,13 @@ module.exports = {
             }
             res.send(movieList)
         } catch (error) {
+            console.log(error);
             res.send(error.message)
         }
     },
     getMovieByIdCtrl: async function (req, res) {
         try {
-            let movie = await MovieService.getById(req.params.id);
+            let movie = await MovieService.getById(req.query.id);
             let movieObj = await Mapper.populateMovie(movie);
             
             if(req.userId!=null){
